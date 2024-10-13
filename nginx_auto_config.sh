@@ -18,7 +18,7 @@ do
     if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
         # 允许浏览器访问，不添加限制
         cat <<EOF >> "$TEMP_FILE"
-    location $LOCATION {
+    location $LOCATION/ {
         proxy_pass $PROXY_PASS;
     }
 EOF
