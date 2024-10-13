@@ -25,7 +25,7 @@ EOF
     else
         # 禁止浏览器访问，添加限制
         cat <<EOF >> "$TEMP_FILE"
-    location $LOCATION {
+    location $LOCATION/ {
         if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
             return 403;
         }
