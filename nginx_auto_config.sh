@@ -21,7 +21,7 @@ do
         # 允许浏览器访问，不添加限制
         cat <<EOF >> "$TEMP_FILE"
     location $LOCATION/ {
-        proxy_pass $PROXY_PASS;
+        proxy_pass https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$PASS;
     }
 EOF
     else
@@ -31,7 +31,7 @@ EOF
         if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
             return 403;
         }
-        proxy_pass https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents/$PASS;
+        proxy_pass https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$PASS;
     }
 EOF
     fi
