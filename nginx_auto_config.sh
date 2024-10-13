@@ -131,16 +131,18 @@ sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.ba
 # 将新配置写入 default 文件
 echo "$nginx_config" | sudo tee /etc/nginx/sites-available/default > /dev/null
 
+echo
+
 # 测试 Nginx 配置是否正确
 sudo nginx -t
 
 # 如果配置无误，重新加载 Nginx
 if [ $? -eq 0 ]; then
-    echo "配置正确，重新加载 Nginx..."
-    sudo systemctl reload nginx
-    echo "Nginx 已重新加载并应用新的配置。"
+    sudo nginx -s reload 
+    echo "配置正确,nginx已重新加载并应用新的配置。"
 else
     echo "Nginx 配置有错误，请检查后重试。"
     # 恢复备份的配置文件
     sudo cp /etc/nginx/sites-available/default.bak /etc/nginx/sites-available/default
+    sudo nginx -s reload
 fi
