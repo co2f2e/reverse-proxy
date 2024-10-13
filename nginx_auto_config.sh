@@ -1,17 +1,12 @@
 #!/bin/bash
 
-# 提示用户输入信息
-read -p "请输入您二级域名: " DOMAIN
-read -p "请输入令牌：" TOKEN
+read -p "请输入你的二级域名: " DOMAIN
+read -p "请输入Github或GitLab私有仓库令牌：" TOKEN
 
-# 生成 Nginx 配置内容
 nginx_config=$(cat <<EOF
-# 监听80端口，重定向到HTTPS
 server {
     listen 80;
     server_name $DOMAIN;
-
-    # 处理所有 HTTP 请求，重定向到 HTTPS
     return 301 https://\$host\$request_uri;
 }
 
