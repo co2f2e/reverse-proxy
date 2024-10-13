@@ -10,7 +10,7 @@ TEMP_FILE=$(mktemp)
 # 动态添加反向代理配置
 for ((i=1; i<=CONFIG_COUNT; i++))
 do
-    read -p "请输入第 $i 个配置的路径（例如 /test/）： " LOCATION
+    read -p "请输入第 $i 个配置的路径（例如 /test）： " LOCATION
     read -p "请输入第 $i 个配置的 GitHub 文件地址（格式 https://api.github.com/repos/用户名/项目名/contents/带路径文件）： " PROXY_PASS
     read -p "是否允许浏览器访问该文件？(y/n): " ALLOW_BROWSER_ACCESS
 
