@@ -15,8 +15,6 @@ if ! pgrep nginx > /dev/null 2>&1
 then
     echo "nginx没有启动，正在启动..."
     sudo nginx
-else
-    echo "nginx正在运行..."
 fi
 
 read -p "请输入你的二级域名: " DOMAIN
