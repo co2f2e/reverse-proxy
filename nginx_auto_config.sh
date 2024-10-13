@@ -47,9 +47,9 @@ server {
     proxy_set_header Host api.github.com;
 
     # 其他代理设置
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
 
     # 启用 SNI（服务器名称指示）以使用正确的证书
     proxy_ssl_server_name on;
@@ -67,14 +67,14 @@ server {
     proxy_read_timeout 60s;
 
     # 防止缓存敏感数据
-    proxy_cache_bypass $http_upgrade;
+    proxy_cache_bypass \$http_upgrade;
 
     proxy_set_header Accept "application/vnd.github.v3.raw";  # 直接获取文件的原始内容
 
     #第一个配置文件
     location /v2ray/ {
         # 禁止所有其他常见浏览器
-        if ($http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
+        if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
             return 403;
         }
         # 反向代理到 GitLab API
@@ -84,7 +84,7 @@ server {
     #第二个配置文件
     location /clash/ {
         # 禁止所有其他常见浏览器
-        if ($http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
+        if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
             return 403;
         }
         # 反向代理到 GitLab API
@@ -94,17 +94,11 @@ server {
     #第三个配置文件
     location /singbox/ {
         # 禁止所有其他常见浏览器
-        if ($http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
+        if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
             return 403;
         }
         # 反向代理到 GitLab API
         proxy_pass https://api.github.com/repos/co2f2e/subscription/contents/config/singbox.json;
-    }
-    
-    #获取ip
-    location /get-ip {
-        default_type text/plain;
-        return 200 "$remote_addr";
     }
 }
 
