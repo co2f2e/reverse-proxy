@@ -112,6 +112,14 @@ EOF
 # 删除临时文件
 rm -f "$TEMP_FILE"
 
+# 使用 which 命令检查 nginx 是否未安装
+if ! which nginx > /dev/null 2>&1
+then
+    echo "还未安装nginx！"
+    # 退出脚本
+    exit 1
+fi
+
 # 备份原有的默认配置文件
 sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
 
