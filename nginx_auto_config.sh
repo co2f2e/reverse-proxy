@@ -1,5 +1,5 @@
 #!/bin/bash
-
+clear
 read -p "请输入你的二级域名: " DOMAIN
 read -p "请输入Github私有仓库令牌：" TOKEN
 read -p "请输入反向代理配置的数量: " CONFIG_COUNT
