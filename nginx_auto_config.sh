@@ -2,7 +2,28 @@
 
 read -p "请输入你的二级域名: " DOMAIN
 read -p "请输入Github或GitLab私有仓库令牌：" TOKEN
+read -p "请输入反向代理配置的数量: " CONFIG_COUNT
 
+# 创建一个临时文件来保存反向代理配置
+TEMP_FILE=$(mktemp)
+
+# 动态添加反向代理配置
+for ((i=1; i<=CONFIG_COUNT; i++))
+do
+    read -p "请输入第 $i 个配置的路径（例如 /v2ray/）： " LOCATION
+    read -p "请输入第 $i 个配置的 GitHub 文件地址（例如 https://api.github.com/repos/co2f2e/subscription/contents/config/v2ray.txt）： " PROXY_PASS
+
+    cat <<EOF >> "$TEMP_FILE"
+    location $LOCATION {
+        if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
+            return 403;
+        }
+        proxy_pass $PROXY_PASS;
+    }
+EOF
+done
+
+# 开始构建 Nginx 配置
 nginx_config=$(cat <<EOF
 server {
     listen 80;
@@ -30,95 +51,52 @@ server {
 
     # 设置 CA 证书
     proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt; 
-    # 如果使用自签名证书或内部 CA，可以禁用 SSL 验证（生产环境不建议）
     proxy_ssl_verify on;   
-    # 设置验证深度为 2
     proxy_ssl_verify_depth 2;
 
     # 添加 Token 到请求头
     proxy_set_header Authorization "token $TOKEN";
-
-    # 保留原始 Host 请求头
     proxy_set_header Host api.github.com;
-
-    # 其他代理设置
     proxy_set_header X-Real-IP \$remote_addr;
     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto \$scheme;
-
-    # 启用 SNI（服务器名称指示）以使用正确的证书
     proxy_ssl_server_name on;
-        
-    # 指定 GitLab 的服务器名称
     proxy_ssl_name api.github.com;
-
-    # 使用 HTTP/1.1 保持连接
     proxy_http_version 1.1;
     proxy_set_header Connection "keep-alive"; 
-
-    # 设置更长的连接超时时间
     proxy_connect_timeout 60s;
     proxy_send_timeout 60s;
     proxy_read_timeout 60s;
-
-    # 防止缓存敏感数据
     proxy_cache_bypass \$http_upgrade;
-
     proxy_set_header Accept "application/vnd.github.v3.raw";  # 直接获取文件的原始内容
 
-    #第一个配置文件
-    location /v2ray/ {
-        # 禁止所有其他常见浏览器
-        if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
-            return 403;
-        }
-        # 反向代理到 GitLab API
-        proxy_pass https://api.github.com/repos/co2f2e/subscription/contents/config/v2ray.txt;
-    }
-
-    #第二个配置文件
-    location /clash/ {
-        # 禁止所有其他常见浏览器
-        if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
-            return 403;
-        }
-        # 反向代理到 GitLab API
-        proxy_pass https://api.github.com/repos/co2f2e/subscription/contents/config/clash.yaml;
-    }
-
-    #第三个配置文件
-    location /singbox/ {
-        # 禁止所有其他常见浏览器
-        if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
-            return 403;
-        }
-        # 反向代理到 GitLab API
-        proxy_pass https://api.github.com/repos/co2f2e/subscription/contents/config/singbox.json;
-    }
+$(
+    # 将临时文件内容导入到 nginx_config
+    cat "$TEMP_FILE"
+)
 }
 
 # 拒绝通过 IP 访问
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name _;  # 这个表示匹配所有未被上面 server 块处理的请求
+    server_name _; 
     return 444;
 }
 
 server {
     listen 443 ssl default_server;
     listen [::]:443 ssl default_server;
-    server_name _;  # 这个表示匹配所有未被上面 server 块处理的请求
-
-    # SSL 证书和私钥文件的路径
+    server_name _;
     ssl_certificate /root/$DOMAIN.crt;
     ssl_certificate_key /root/$DOMAIN.key;
-    
     return 444;
-
 }
 EOF
 )
+
+# 删除临时文件
+rm -f "$TEMP_FILE"
 
 # 备份原有的默认配置文件
 sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
