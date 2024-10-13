@@ -3,6 +3,8 @@ clear
 read -p "请输入你的二级域名: " DOMAIN
 read -p "请输入Github私有仓库令牌：" TOKEN
 read -p "请输入反向代理配置的数量: " CONFIG_COUNT
+read -p "请输入Github用户名：" USERNAME
+read -p "请输入Github私有仓库名：" PROJECTNAME
 
 # 创建一个临时文件来保存反向代理配置
 TEMP_FILE=$(mktemp)
@@ -11,7 +13,7 @@ TEMP_FILE=$(mktemp)
 for ((i=1; i<=CONFIG_COUNT; i++))
 do
     read -p "请输入第 $i 个配置的路径（例如 /test）： " LOCATION
-    read -p "请输入第 $i 个配置的 GitHub 文件地址（格式 https://api.github.com/repos/用户名/项目名/contents/带路径文件）： " PROXY_PASS
+    read -p "请输入第 $i 个配置的 GitHub 文件地址（格式 https://api.github.com/repos/用户名/项目名/contents/带路径文件）： " PASS
     read -p "是否允许浏览器访问该文件？(y/n): " ALLOW_BROWSER_ACCESS
 
     # 检查用户输入是否允许浏览器访问
@@ -29,7 +31,7 @@ EOF
         if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
             return 403;
         }
-        proxy_pass $PROXY_PASS;
+        proxy_pass https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents/$PASS;
     }
 EOF
     fi
