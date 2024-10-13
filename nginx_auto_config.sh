@@ -13,7 +13,7 @@ TEMP_FILE=$(mktemp)
 for ((i=1; i<=CONFIG_COUNT; i++))
 do
     read -p "请输入第 $i 个配置的路径（例如 /test）： " LOCATION
-    read -p "请输入第 $i 个配置的 GitHub 文件地址（格式 https://api.github.com/repos/用户名/项目名/contents/带路径文件）： " PASS
+    read -p "请输入第 $i 个配置的 GitHub 文件地址（格式 https://api.github.com/repos/用户名/项目名/contents/带路径文件）： " FILE_PASS
     read -p "是否允许浏览器访问该文件？(y/n): " ALLOW_BROWSER_ACCESS
 
     # 检查用户输入是否允许浏览器访问
@@ -21,7 +21,7 @@ do
         # 允许浏览器访问，不添加限制
         cat <<EOF >> "$TEMP_FILE"
     location $LOCATION/ {
-        proxy_pass https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$PASS;
+        proxy_pass https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$FILE_PASS;
     }
 EOF
     else
@@ -31,7 +31,7 @@ EOF
         if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
             return 403;
         }
-        proxy_pass https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$PASS;
+        proxy_pass https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$FILE_PASS;
     }
 EOF
     fi
