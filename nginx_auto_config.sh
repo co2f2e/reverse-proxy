@@ -126,10 +126,12 @@ sudo nginx -t
 # 如果配置无误，重新加载 Nginx
 if [ $? -eq 0 ]; then
     sudo nginx -s reload 
+    echo
     echo "配置正确,nginx已重新加载并应用新的配置。"
 else
     # 恢复备份的配置文件
     sudo cp /etc/nginx/sites-available/default.bak /etc/nginx/sites-available/default
     sudo nginx -s reload
+    echo
     echo "Nginx 配置有错误，请检查后重试，已恢复原有配置并应用。"
 fi
