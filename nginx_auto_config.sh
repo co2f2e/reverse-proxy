@@ -12,8 +12,19 @@ for ((i=1; i<=CONFIG_COUNT; i++))
 do
     read -p "请输入第 $i 个配置的路径（例如 /test/）： " LOCATION
     read -p "请输入第 $i 个配置的 GitHub 文件地址（格式 https://api.github.com/repos/用户名/项目名/contents/带路径文件）： " PROXY_PASS
+    read -p "是否允许浏览器访问该文件？(y/n): " ALLOW_BROWSER_ACCESS
 
-    cat <<EOF >> "$TEMP_FILE"
+    # 检查用户输入是否允许浏览器访问
+    if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
+        # 允许浏览器访问，不添加限制
+        cat <<EOF >> "$TEMP_FILE"
+    location $LOCATION {
+        proxy_pass $PROXY_PASS;
+    }
+EOF
+    else
+        # 禁止浏览器访问，添加限制
+        cat <<EOF >> "$TEMP_FILE"
     location $LOCATION {
         if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
             return 403;
@@ -21,6 +32,7 @@ do
         proxy_pass $PROXY_PASS;
     }
 EOF
+    fi
 done
 
 # 开始构建 Nginx 配置
