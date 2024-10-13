@@ -120,6 +120,15 @@ echo "$nginx_config" | sudo tee /etc/nginx/sites-available/default > /dev/null
 
 echo
 
+# 检查nginx进程是否存在，不存在则启动nginx
+if ! pgrep nginx > /dev/null 2>&1
+then
+    echo "nginx没有启动，正在启动..."
+    sudo nginx
+else
+    echo "nginx正在运行..."
+fi
+
 # 测试 Nginx 配置是否正确
 sudo nginx -t
 
