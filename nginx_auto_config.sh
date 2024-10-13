@@ -12,7 +12,7 @@ server {
     server_name $DOMAIN;
 
     # 处理所有 HTTP 请求，重定向到 HTTPS
-    return 301 https://$host$request_uri;
+    return 301 https://\$host\$request_uri;
 }
 
 server {
