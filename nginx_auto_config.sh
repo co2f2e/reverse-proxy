@@ -5,7 +5,7 @@ read -p "请输入您二级域名: " DOMAIN
 read -p "请输入令牌：" TOKEN
 
 # 生成 Nginx 配置内容
-nginx_config="
+nginx_config=$(cat <<EOF
 # 监听80端口，重定向到HTTPS
 server {
     listen 80;
@@ -122,7 +122,8 @@ server {
     return 444;
 
 }
-"
+EOF
+)
 
 # 备份原有的默认配置文件
 sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
