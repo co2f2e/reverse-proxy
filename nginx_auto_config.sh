@@ -53,7 +53,7 @@ server {
     ssl_certificate /root/$DOMAIN.crt;
     ssl_certificate_key /root/$DOMAIN.key;
 
-    # SSL 配置（可根据需要进行调整）
+    # SSL 配置
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
     ssl_prefer_server_ciphers on;
