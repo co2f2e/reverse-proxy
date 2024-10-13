@@ -1,5 +1,24 @@
 #!/bin/bash
+
 clear
+
+# 使用 which 命令检查 nginx 是否未安装
+if ! which nginx > /dev/null 2>&1
+then
+    echo "还未安装nginx！"
+    # 退出脚本
+    exit 1
+fi
+
+# 检查nginx进程是否存在，不存在则启动nginx
+if ! pgrep nginx > /dev/null 2>&1
+then
+    echo "nginx没有启动，正在启动..."
+    sudo nginx
+else
+    echo "nginx正在运行..."
+fi
+
 read -p "请输入你的二级域名: " DOMAIN
 read -p "请输入Github私有仓库令牌：" TOKEN
 read -p "请输入反向代理配置的数量: " CONFIG_COUNT
@@ -112,14 +131,6 @@ EOF
 # 删除临时文件
 rm -f "$TEMP_FILE"
 
-# 使用 which 命令检查 nginx 是否未安装
-if ! which nginx > /dev/null 2>&1
-then
-    echo "还未安装nginx！"
-    # 退出脚本
-    exit 1
-fi
-
 # 备份原有的默认配置文件
 sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
 
@@ -127,15 +138,6 @@ sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.ba
 echo "$nginx_config" | sudo tee /etc/nginx/sites-available/default > /dev/null
 
 echo
-
-# 检查nginx进程是否存在，不存在则启动nginx
-if ! pgrep nginx > /dev/null 2>&1
-then
-    echo "nginx没有启动，正在启动..."
-    sudo nginx
-else
-    echo "nginx正在运行..."
-fi
 
 # 测试 Nginx 配置是否正确
 sudo nginx -t
