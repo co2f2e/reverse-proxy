@@ -1,7 +1,7 @@
 #!/bin/bash
 
 read -p "请输入你的二级域名: " DOMAIN
-read -p "请输入Github或GitLab私有仓库令牌：" TOKEN
+read -p "请输入Github私有仓库令牌：" TOKEN
 read -p "请输入反向代理配置的数量: " CONFIG_COUNT
 
 # 创建一个临时文件来保存反向代理配置
