@@ -146,13 +146,26 @@ server {
     proxy_send_timeout 60s;
     proxy_read_timeout 60s;
     proxy_cache_bypass \$http_upgrade;
-    proxy_set_header Accept "application/vnd.github.v3.raw";  # 直接获取文件的原始内容
+#    proxy_set_header Accept "application/vnd.github.v3.raw";  # 直接获取文件的原始内容
 
-$(
-    # 将临时文件内容导入到 nginx_config
-    cat "$TEMP_FILE"
+#$(
+#   # 将临时文件内容导入到 nginx_config
+#    cat "$TEMP_FILE"
+#)
+#}
+
+EOF
 )
-}
+
+# 如果选择的是 Github，添加 proxy_set_header Accept
+if [ "$choice" == "2" ]; then
+    nginx_config+=$'\n    proxy_set_header Accept "application/vnd.github.v3.raw";  # 直接获取文件的原始内容\n'
+fi
+
+nginx_config+=$'\n'
+nginx_config+=$(cat "$TEMP_FILE")
+
+nginx_config+=$'\n}\n'
 
 # 拒绝通过 IP 访问
 server {
