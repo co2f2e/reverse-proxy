@@ -49,6 +49,16 @@ else
 fi
 done
 
+#根据不同选择赋值
+if [ "$choice" == "1" ]; then
+    PROXY_SET_HEADER_HOST="gitlab.com"
+    PROXY_SSL_NAME="gitlab.com"
+else
+    PROXY_SET_HEADER_HOST="api.github.com"
+    PROXY_SSL_NAME="api.github.com"
+fi
+
+
 # 创建一个临时文件来保存反向代理配置
 TEMP_FILE=$(mktemp)
 
@@ -124,12 +134,12 @@ server {
 
     # 添加 Token 到请求头
     proxy_set_header Authorization "token $TOKEN";
-    proxy_set_header Host api.github.com;
+    proxy_set_header Host $PROXY_SET_HEADER_HOST;
     proxy_set_header X-Real-IP \$remote_addr;
     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto \$scheme;
     proxy_ssl_server_name on;
-    proxy_ssl_name api.github.com;
+    proxy_ssl_name $PROXY_SSL_NAME;
     proxy_http_version 1.1;
     proxy_set_header Connection "keep-alive"; 
     proxy_connect_timeout 60s;
