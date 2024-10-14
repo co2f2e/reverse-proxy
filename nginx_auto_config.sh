@@ -2,6 +2,13 @@
 
 clear
 
+check_url() {
+    local url="$1"
+    local status_code
+    status_code=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+    echo "$status_code"
+}
+
 if ! which nginx > /dev/null 2>&1; then
     echo "还未安装nginx！"
     exit 1
@@ -63,6 +70,12 @@ for ((i=1; i<=CONFIG_COUNT; i++)); do
         PROXY_URL="https://gitlab.com/api/v4/projects/$USERNAME%2F$PROJECTNAME/repository/files$FILE_PASS_CONVERTED/raw?ref=main"
     else
         PROXY_URL="https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$FILE_PASS"
+    fi
+
+    STATUS_CODE=$(check_url "$PROXY_URL")
+    if [ "$STATUS_CODE" -ne 200 ]; then
+        echo "输入有误: 无法访问 $PROXY_URL (状态码: $STATUS_CODE),请检查输入。"
+        break
     fi
 
     if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
