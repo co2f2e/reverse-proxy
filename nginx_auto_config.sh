@@ -17,6 +17,7 @@ then
     sudo nginx
 fi
 
+while true; do
 echo "请选择私有仓库类型:"
 echo "1) Gitlab私有仓库"
 echo "2) Github私有仓库"
@@ -27,19 +28,20 @@ selected_choice=$choice
 
 echo
 
-while true; do
 if [ "$choice" == "2" ]; then
     read -p "请输入你的二级域名: " DOMAIN
     read -p "请输入Github私有仓库令牌：" TOKEN
     read -p "请输入反向代理配置的数量: " CONFIG_COUNT
     read -p "请输入Github用户名：" USERNAME
     read -p "请输入Github私有仓库名：" PROJECTNAME
+    break
 elif [ "$choice" == "1" ]; then
     read -p "请输入你的二级域名: " DOMAIN
     read -p "请输入Gitlab私有仓库令牌：" TOKEN
     read -p "请输入反向代理配置的数量: " CONFIG_COUNT
     read -p "请输入Gitlab用户名：" USERNAME
     read -p "请输入Gitlab私有仓库名：" PROJECTNAME
+    break
 else
     echo "无效的选择，请输入1或2。"
 fi
