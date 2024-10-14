@@ -27,6 +27,7 @@ selected_choice=$choice
 
 echo
 
+while true; do
 if [ "$choice" == "2" ]; then
     read -p "请输入你的二级域名: " DOMAIN
     read -p "请输入Github私有仓库令牌：" TOKEN
@@ -42,6 +43,7 @@ elif [ "$choice" == "1" ]; then
 else
     echo "无效的选择，请输入1或2。"
 fi
+done
 
 # 创建一个临时文件来保存反向代理配置
 TEMP_FILE=$(mktemp)
