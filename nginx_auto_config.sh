@@ -53,12 +53,23 @@ do
     read -p "请输入第 $i 个配置的GitHub文件路径（例如/test.txt）： " FILE_PASS
     read -p "是否允许浏览器访问该文件？(y/n): " ALLOW_BROWSER_ACCESS
 
+# 根据选择生成不同的 proxy_pass URL
+if [ "$choice" == "1" ]; then
+    # 保留第一个斜杠，之后的斜杠替换为 %2F
+    FILE_PASS_CONVERTED=$(echo "$FILE_PASS" | sed 's@/@%2F@g' | sed 's@^%2F@/@')
+    # Gitlab 私有仓库的 URL
+    PROXY_URL="https://gitlab.com/api/v4/projects/$USERNAME%2F$PROJECTME/repository/files/$FILE_PASS_CONVERTED/raw?ref=main;
+elif [ "$choice" == "2" ]; then
+    # Github 私有仓库的 URL
+    PROXY_URL="https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$FILE_PASS"
+else
+
     # 检查用户输入是否允许浏览器访问
     if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
         # 允许浏览器访问，不添加限制
         cat <<EOF >> "$TEMP_FILE"
     location $LOCATION/ {
-        proxy_pass https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$FILE_PASS;
+        proxy_pass $PROXY_URL;
     }
 EOF
     else
@@ -68,7 +79,7 @@ EOF
         if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
             return 403;
         }
-        proxy_pass https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$FILE_PASS;
+        proxy_pass $PROXY_URL;
     }
 EOF
     fi
