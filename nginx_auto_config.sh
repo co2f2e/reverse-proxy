@@ -64,7 +64,7 @@ if [ "$choice" == "1" ]; then
 elif [ "$choice" == "2" ]; then
     # Github 私有仓库的 URL
     PROXY_URL="https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$FILE_PASS"
-else
+fi
 
     # 检查用户输入是否允许浏览器访问
     if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
