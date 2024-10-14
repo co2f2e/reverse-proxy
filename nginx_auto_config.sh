@@ -64,7 +64,7 @@ if [ "$choice" == "1" ]; then
     # 保留第一个斜杠，之后的斜杠替换为 %2F
     FILE_PASS_CONVERTED=$(echo "$FILE_PASS" | sed 's@/@%2F@g' | sed 's@^%2F@/@')
     # Gitlab 私有仓库的 URL
-    PROXY_URL="https://gitlab.com/api/v4/projects/$USERNAME%2F$PROJECTME/repository/files/$FILE_PASS_CONVERTED/raw?ref=main;
+    PROXY_URL="https://gitlab.com/api/v4/projects/$USERNAME%2F$PROJECTNAME/repository/files/$FILE_PASS_CONVERTED/raw?ref=main;
 elif [ "$choice" == "2" ]; then
     # Github 私有仓库的 URL
     PROXY_URL="https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$FILE_PASS"
