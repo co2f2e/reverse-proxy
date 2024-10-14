@@ -27,11 +27,21 @@ selected_choice=$choice
 
 echo
 
-read -p "请输入你的二级域名: " DOMAIN
-read -p "请输入Github私有仓库令牌：" TOKEN
-read -p "请输入反向代理配置的数量: " CONFIG_COUNT
-read -p "请输入Github用户名：" USERNAME
-read -p "请输入Github私有仓库名：" PROJECTNAME
+if [ "$choice" == "1" ]; then
+    read -p "请输入你的二级域名: " DOMAIN
+    read -p "请输入Github私有仓库令牌：" TOKEN
+    read -p "请输入反向代理配置的数量: " CONFIG_COUNT
+    read -p "请输入Github用户名：" USERNAME
+    read -p "请输入Github私有仓库名：" PROJECTNAME
+elif [ "$choice" == "2" ]; then
+    read -p "请输入你的二级域名: " DOMAIN
+    read -p "请输入Gitlab私有仓库令牌：" TOKEN
+    read -p "请输入反向代理配置的数量: " CONFIG_COUNT
+    read -p "请输入Gitlab用户名：" USERNAME
+    read -p "请输入Gitlab私有仓库名：" PROJECTNAME
+else
+    echo "无效的选择，请输入1或2。"
+fi
 
 # 创建一个临时文件来保存反向代理配置
 TEMP_FILE=$(mktemp)
