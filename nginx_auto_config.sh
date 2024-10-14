@@ -2,13 +2,11 @@
 
 clear
 
-# 使用 which 命令检查 nginx 是否未安装
 if ! which nginx > /dev/null 2>&1; then
     echo "还未安装nginx！"
     exit 1
 fi
 
-# 检查nginx进程是否存在，不存在则启动nginx
 if ! pgrep nginx > /dev/null 2>&1; then
     echo "nginx没有启动，正在启动..."
     sudo nginx
@@ -43,7 +41,6 @@ while true; do
     fi
 done
 
-# 根据不同选择赋值
 if [ "$choice" == "1" ]; then
     PROXY_SET_HEADER_HOST="gitlab.com"
     PROXY_SSL_NAME="gitlab.com"
@@ -54,27 +51,20 @@ else
     PREFIX="token"
 fi
 
-# 创建一个临时文件来保存反向代理配置
 TEMP_FILE=$(mktemp)
 
-# 动态添加反向代理配置
 for ((i=1; i<=CONFIG_COUNT; i++)); do
     read -p "请输入第 $i 个配置的路径（例如/test）： " LOCATION
     read -p "请输入第 $i 个配置的GitHub文件路径（例如/test.txt）： " FILE_PASS
     read -p "是否允许浏览器访问该文件？(y/n): " ALLOW_BROWSER_ACCESS
 
-    # 根据选择生成不同的 proxy_pass URL
     if [ "$choice" == "1" ]; then
-        # 保留第一个斜杠，之后的斜杠替换为 %2F
         FILE_PASS_CONVERTED=$(echo "$FILE_PASS" | sed 's@/@%2F@g' | sed 's@^%2F@/@')
-        # Gitlab 私有仓库的 URL
         PROXY_URL="https://gitlab.com/api/v4/projects/$USERNAME%2F$PROJECTNAME/repository/files$FILE_PASS_CONVERTED/raw?ref=main"
     else
-        # Github 私有仓库的 URL
         PROXY_URL="https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$FILE_PASS"
     fi
 
-    # 检查用户输入是否允许浏览器访问
     if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
         cat <<EOF >> "$TEMP_FILE"
     location $LOCATION/ {
@@ -93,7 +83,6 @@ EOF
     fi
 done
 
-# 开始构建 Nginx 配置
 nginx_config=$(cat <<EOF
 server {
     listen 80;
@@ -105,7 +94,6 @@ server {
     listen 443 ssl http2;
     server_name $DOMAIN;
 
-    # 公共配置
     ssl_certificate /root/$DOMAIN.crt;
     ssl_certificate_key /root/$DOMAIN.key;
 
@@ -135,7 +123,6 @@ server {
 EOF
 )
 
-# 如果选择的是 Github，添加 proxy_set_header Accept
 if [ "$choice" == "2" ]; then
     nginx_config+=$'\n    proxy_set_header Accept "application/vnd.github.v3.raw";\n'
 fi
@@ -145,7 +132,6 @@ nginx_config+=$(cat "$TEMP_FILE")
 
 nginx_config+=$'\n}\n'
 
-# 拒绝通过 IP 访问
 nginx_config+=$(cat <<EOF
 server {
     listen 80 default_server;
@@ -165,28 +151,22 @@ server {
 EOF
 )
 
-# 删除临时文件
 rm -f "$TEMP_FILE"
 
-# 备份原有的默认配置文件
 sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
 
-# 将新配置写入 default 文件
 echo "$nginx_config" | sudo tee /etc/nginx/sites-available/default > /dev/null
 
 echo
 
-# 测试 Nginx 配置是否正确
 sudo nginx -t
 
-# 如果配置无误，重新加载 Nginx
 if [ $? -eq 0 ]; then
     sudo nginx -s reload 
     echo
     echo "配置正确,nginx已重新加载并应用新的配置!"
     echo
 else
-    # 恢复备份的配置文件
     sudo cp /etc/nginx/sites-available/default.bak /etc/nginx/sites-available/default
     sudo nginx -s reload
     echo
