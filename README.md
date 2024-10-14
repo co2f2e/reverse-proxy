@@ -1,6 +1,7 @@
 <h1 align="center">
   reverse-proxy
 </h1>
+通过Nginx反向代理访问Github或Gitlab私有仓库中的文件
 
 ## 注意
 * 已经申请了SSL证书，没有校验SSL证书和CA证书路径，若出现报错，会还原原来的配置
