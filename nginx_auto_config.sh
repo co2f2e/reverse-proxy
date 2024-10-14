@@ -107,7 +107,7 @@ server {
     proxy_ssl_verify on;   
     proxy_ssl_verify_depth 2;
 
-    proxy_set_header Authorization "$PRIFIX $TOKEN";
+    proxy_set_header Authorization "$PREFIX $TOKEN";
     proxy_set_header Host $PROXY_SET_HEADER_HOST;
     proxy_set_header X-Real-IP \$remote_addr;
     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
