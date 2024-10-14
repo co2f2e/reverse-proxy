@@ -111,7 +111,7 @@ EOF
         cat <<EOF >> "$TEMP_FILE"
     location $LOCATION/ {
         if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
-            return 403;
+            return 444;
         }
         proxy_pass $PROXY_URL;
     }
