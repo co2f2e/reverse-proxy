@@ -47,9 +47,11 @@ done
 if [ "$choice" == "1" ]; then
     PROXY_SET_HEADER_HOST="gitlab.com"
     PROXY_SSL_NAME="gitlab.com"
+    PREFIX="Bearer"
 else
     PROXY_SET_HEADER_HOST="api.github.com"
     PROXY_SSL_NAME="api.github.com"
+    PREFIX="token"
 fi
 
 # 创建一个临时文件来保存反向代理配置
@@ -117,7 +119,7 @@ server {
     proxy_ssl_verify on;   
     proxy_ssl_verify_depth 2;
 
-    proxy_set_header Authorization "token $TOKEN";
+    proxy_set_header Authorization "$PRIFIX $TOKEN";
     proxy_set_header Host $PROXY_SET_HEADER_HOST;
     proxy_set_header X-Real-IP \$remote_addr;
     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
