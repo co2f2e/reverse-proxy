@@ -80,7 +80,7 @@ fi
 TEMP_FILE=$(mktemp)
 
 for ((i=1; i<=CONFIG_COUNT; )); do
-    read -p "请输入第 $i 个配置的路径（例如/test）： " LOCATION
+    read -p "请输入第 $i 个配置的访问路径（例如/test）： " LOCATION
     read -p "请输入第 $i 个配置的GitHub文件路径（例如/test.txt）： " FILE_PASS
     read -p "是否允许浏览器访问该文件？(y/n): " ALLOW_BROWSER_ACCESS
 
@@ -93,11 +93,12 @@ for ((i=1; i<=CONFIG_COUNT; )); do
 
     STATUS_CODE=$(check_url "$PROXY_URL" "$PREFIX $TOKEN")
     if [ "$STATUS_CODE" -ne 200 ]; then
-        echo_red "第 $i 个配置有误，状态码: $STATUS_CODE，若域名，用户名，仓库名，令牌无误，请重新输入，否则请重新运行脚本。"
+        echo_red "第 $i 个配置有误，状态码: $STATUS_CODE，若域名，用户名，仓库名，令牌无误，请重新输入访问路径和文件路径，否则请重新运行脚本。"
         continue
     else
         echo
-        echo_green "第 $i 个配置访问路径： $DOMAIN$LOCATION 状态码: $STATUS_CODE"
+        echo_green "第 $i 个配置访问路径： https://$DOMAIN$LOCATION   状态码: $STATUS_CODE"
+        echo
     fi
 
     if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
