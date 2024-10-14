@@ -3,53 +3,47 @@
 clear
 
 # 使用 which 命令检查 nginx 是否未安装
-if ! which nginx > /dev/null 2>&1
-then
+if ! which nginx > /dev/null 2>&1; then
     echo "还未安装nginx！"
-    # 退出脚本
     exit 1
 fi
 
 # 检查nginx进程是否存在，不存在则启动nginx
-if ! pgrep nginx > /dev/null 2>&1
-then
+if ! pgrep nginx > /dev/null 2>&1; then
     echo "nginx没有启动，正在启动..."
     sudo nginx
 fi
 
 while true; do
-echo "请选择私有仓库类型:"
-echo "1) Gitlab私有仓库"
-echo "2) Github私有仓库"
-read -p "请输入你的选择: " choice
+    echo "请选择私有仓库类型:"
+    echo "1) Gitlab私有仓库"
+    echo "2) Github私有仓库"
+    read -p "请输入你的选择: " choice
 
-# 使用变量
-selected_choice=$choice
-
-echo
-
-if [ "$choice" == "2" ]; then
-    read -p "请输入你的二级域名: " DOMAIN
-    read -p "请输入Github私有仓库令牌：" TOKEN
-    read -p "请输入反向代理配置的数量: " CONFIG_COUNT
-    read -p "请输入Github用户名：" USERNAME
-    read -p "请输入Github私有仓库名：" PROJECTNAME
-    break
-elif [ "$choice" == "1" ]; then
-    read -p "请输入你的二级域名: " DOMAIN
-    read -p "请输入Gitlab私有仓库令牌：" TOKEN
-    read -p "请输入反向代理配置的数量: " CONFIG_COUNT
-    read -p "请输入Gitlab用户名：" USERNAME
-    read -p "请输入Gitlab私有仓库名：" PROJECTNAME
-    break
-else
-    clear
-    echo "无效的选择，请输入1或2。"
     echo
-fi
+
+    if [ "$choice" == "2" ]; then
+        read -p "请输入你的二级域名: " DOMAIN
+        read -p "请输入Github私有仓库令牌：" TOKEN
+        read -p "请输入反向代理配置的数量: " CONFIG_COUNT
+        read -p "请输入Github用户名：" USERNAME
+        read -p "请输入Github私有仓库名：" PROJECTNAME
+        break
+    elif [ "$choice" == "1" ]; then
+        read -p "请输入你的二级域名: " DOMAIN
+        read -p "请输入Gitlab私有仓库令牌：" TOKEN
+        read -p "请输入反向代理配置的数量: " CONFIG_COUNT
+        read -p "请输入Gitlab用户名：" USERNAME
+        read -p "请输入Gitlab私有仓库名：" PROJECTNAME
+        break
+    else
+        clear
+        echo "无效的选择，请输入1或2。"
+        echo
+    fi
 done
 
-#根据不同选择赋值
+# 根据不同选择赋值
 if [ "$choice" == "1" ]; then
     PROXY_SET_HEADER_HOST="gitlab.com"
     PROXY_SSL_NAME="gitlab.com"
@@ -58,38 +52,34 @@ else
     PROXY_SSL_NAME="api.github.com"
 fi
 
-
 # 创建一个临时文件来保存反向代理配置
 TEMP_FILE=$(mktemp)
 
 # 动态添加反向代理配置
-for ((i=1; i<=CONFIG_COUNT; i++))
-do
+for ((i=1; i<=CONFIG_COUNT; i++)); do
     read -p "请输入第 $i 个配置的路径（例如/test）： " LOCATION
     read -p "请输入第 $i 个配置的GitHub文件路径（例如/test.txt）： " FILE_PASS
     read -p "是否允许浏览器访问该文件？(y/n): " ALLOW_BROWSER_ACCESS
 
-# 根据选择生成不同的 proxy_pass URL
-if [ "$choice" == "1" ]; then
-    # 保留第一个斜杠，之后的斜杠替换为 %2F
-    FILE_PASS_CONVERTED=$(echo "$FILE_PASS" | sed 's@/@%2F@g' | sed 's@^%2F@/@')
-    # Gitlab 私有仓库的 URL
-    PROXY_URL="https://gitlab.com/api/v4/projects/$USERNAME%2F$PROJECTNAME/repository/files/$FILE_PASS_CONVERTED/raw?ref=main;
-elif [ "$choice" == "2" ]; then
-    # Github 私有仓库的 URL
-    PROXY_URL="https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$FILE_PASS"
-fi
+    # 根据选择生成不同的 proxy_pass URL
+    if [ "$choice" == "1" ]; then
+        # 保留第一个斜杠，之后的斜杠替换为 %2F
+        FILE_PASS_CONVERTED=$(echo "$FILE_PASS" | sed 's@/@%2F@g' | sed 's@^%2F@/@')
+        # Gitlab 私有仓库的 URL
+        PROXY_URL="https://gitlab.com/api/v4/projects/$USERNAME%2F$PROJECTNAME/repository/files/$FILE_PASS_CONVERTED/raw?ref=main"
+    elif [ "$choice" == "2" ]; then
+        # Github 私有仓库的 URL
+        PROXY_URL="https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$FILE_PASS"
+    fi
 
     # 检查用户输入是否允许浏览器访问
     if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
-        # 允许浏览器访问，不添加限制
         cat <<EOF >> "$TEMP_FILE"
     location $LOCATION/ {
         proxy_pass $PROXY_URL;
     }
 EOF
     else
-        # 禁止浏览器访问，添加限制
         cat <<EOF >> "$TEMP_FILE"
     location $LOCATION/ {
         if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
@@ -114,25 +104,19 @@ server {
     server_name $DOMAIN;
 
     # 公共配置
-    
-    # SSL 证书和私钥文件的路径
     ssl_certificate /root/$DOMAIN.crt;
     ssl_certificate_key /root/$DOMAIN.key;
 
-    # SSL 配置
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
     ssl_prefer_server_ciphers on;
 
-    # 启用 HSTS
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
-    # 设置 CA 证书
     proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt; 
     proxy_ssl_verify on;   
     proxy_ssl_verify_depth 2;
 
-    # 添加 Token 到请求头
     proxy_set_header Authorization "token $TOKEN";
     proxy_set_header Host $PROXY_SET_HEADER_HOST;
     proxy_set_header X-Real-IP \$remote_addr;
