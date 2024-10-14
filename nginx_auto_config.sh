@@ -4,8 +4,9 @@ clear
 
 check_url() {
     local url="$1"
+    local token="$2"
     local status_code
-    status_code=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+    status_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: $token" "$url")
     echo "$status_code"
 }
 
@@ -60,7 +61,7 @@ fi
 
 TEMP_FILE=$(mktemp)
 
-for ((i=1; i<=CONFIG_COUNT; i++)); do
+for ((i=1; i<=CONFIG_COUNT; )); do
     read -p "请输入第 $i 个配置的路径（例如/test）： " LOCATION
     read -p "请输入第 $i 个配置的GitHub文件路径（例如/test.txt）： " FILE_PASS
     read -p "是否允许浏览器访问该文件？(y/n): " ALLOW_BROWSER_ACCESS
@@ -72,10 +73,10 @@ for ((i=1; i<=CONFIG_COUNT; i++)); do
         PROXY_URL="https://api.github.com/repos/$USERNAME/$PROJECTNAME/contents$FILE_PASS"
     fi
 
-    STATUS_CODE=$(check_url "$PROXY_URL")
+    STATUS_CODE=$(check_url "$PROXY_URL" "$PREFIX $TOKEN")
     if [ "$STATUS_CODE" -ne 200 ]; then
-        echo "输入有误: 无法访问 $PROXY_URL (状态码: $STATUS_CODE),请检查输入。"
-        break
+        echo "错误: 无法访问 $PROXY_URL (状态码: $STATUS_CODE)。请检查输入。"
+        continue
     fi
 
     if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
@@ -94,6 +95,7 @@ EOF
     }
 EOF
     fi
+    ((i++))
 done
 
 nginx_config=$(cat <<EOF
