@@ -93,7 +93,9 @@ for ((i=1; i<=CONFIG_COUNT; )); do
 
     STATUS_CODE=$(check_url "$PROXY_URL" "$PREFIX $TOKEN")
     if [ "$STATUS_CODE" -ne 200 ]; then
-        echo_red "第 $i 个配置有误，状态码: $STATUS_CODE，若域名，用户名，仓库名，令牌无误，请重新输入访问路径和文件路径，否则请重新运行脚本。"
+        echo
+        echo_red "第 $i 个配置有误，状态码: $STATUS_CODE;若域名，用户名，仓库名，令牌无误，请重新输入访问路径和文件路径，否则请重新运行脚本。"
+        echo
         continue
     else
         echo
