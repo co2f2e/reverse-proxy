@@ -77,6 +77,8 @@ for ((i=1; i<=CONFIG_COUNT; )); do
     if [ "$STATUS_CODE" -ne 200 ]; then
         echo "输入有误: 无法访问 $PROXY_URL (状态码: $STATUS_CODE)，请检查输入。"
         continue
+    else
+        echo "输入正确: 可以访问 $PROXY_URL (状态码: $STATUS_CODE)。"
     fi
 
     if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
