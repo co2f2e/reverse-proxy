@@ -21,7 +21,7 @@ while true; do
 echo "请选择私有仓库类型:"
 echo "1) Gitlab私有仓库"
 echo "2) Github私有仓库"
-read -p "请输入你的选择 (1 或 2): " choice
+read -p "请输入你的选择: " choice
 
 # 使用变量
 selected_choice=$choice
@@ -43,7 +43,9 @@ elif [ "$choice" == "1" ]; then
     read -p "请输入Gitlab私有仓库名：" PROJECTNAME
     break
 else
+    clear
     echo "无效的选择，请输入1或2。"
+    echo
 fi
 done
 
