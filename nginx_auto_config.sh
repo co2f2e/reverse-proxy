@@ -75,7 +75,7 @@ for ((i=1; i<=CONFIG_COUNT; )); do
 
     STATUS_CODE=$(check_url "$PROXY_URL" "$PREFIX $TOKEN")
     if [ "$STATUS_CODE" -ne 200 ]; then
-        echo "错误: 无法访问 $PROXY_URL (状态码: $STATUS_CODE)。请检查输入。"
+        echo "输入有误: 无法访问 $PROXY_URL (状态码: $STATUS_CODE)，请检查输入。"
         continue
     fi
 
