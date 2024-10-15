@@ -3,6 +3,7 @@
 GREEN='\033[32m'
 RED='\033[31m'
 YELLOW='\033[33m'
+BLUE='\033[0;34m'
 RESET='\033[0m'
 
 echo_green() {
@@ -15,6 +16,10 @@ echo_red() {
 
 echo_yellow() {
 	echo -e "${YELLOW}${1}${RESET}"
+}
+
+echo_blue() {
+	echo -e "${BLUE}${1}${RESET}"
 }
 
 clear
@@ -38,26 +43,26 @@ if ! pgrep nginx >/dev/null 2>&1; then
 fi
 
 while true; do
-	echo "请选择私有仓库类型:"
-	echo "1) Gitlab私有仓库"
-	echo "2) Github私有仓库"
-	read -p "请输入你的选择: " choice
+	echo_blue "请选择私有仓库类型:"
+	echo_blue "1) Gitlab私有仓库"
+	echo_blue "2) Github私有仓库"
+	read -p "$(echo_blue '请输入你的选择:')"  choice
 
 	echo
 
 	if [ "$choice" == "2" ]; then
-		read -p "请输入你的二级域名: " DOMAIN
-		read -p "请输入Github私有仓库令牌：" TOKEN
-		read -p "请输入反向代理配置的数量: " CONFIG_COUNT
-		read -p "请输入Github用户名：" USERNAME
-		read -p "请输入Github私有仓库名：" PROJECTNAME
+		read -p "$(echo_blue '请输入你的二级域名：') " DOMAIN
+		read -p "$(echo_blue '请输入Github私有仓库令牌：')" TOKEN
+		read -p "$(echo_blue '请输入反向代理配置的数量：')" CONFIG_COUNT
+		read -p "$(echo_blue '请输入Github用户名：')" USERNAME
+		read -p "$(echo_blue '请输入Github私有仓库名：')" PROJECTNAME
 		break
 	elif [ "$choice" == "1" ]; then
-		read -p "请输入你的二级域名: " DOMAIN
-		read -p "请输入Gitlab私有仓库令牌：" TOKEN
-		read -p "请输入反向代理配置的数量: " CONFIG_COUNT
-		read -p "请输入Gitlab用户名：" USERNAME
-		read -p "请输入Gitlab私有仓库名：" PROJECTNAME
+		read -p "$(echo_blue '请输入你的二级域名：') " DOMAIN
+		read -p "$(echo_blue '请输入Gitlab私有仓库令牌：')" TOKEN
+		read -p "$(echo_blue '请输入反向代理配置的数量：')" CONFIG_COUNT
+		read -p "$(echo_blue '请输入Gitlab用户名：')" USERNAME
+		read -p "$(echo_blue '请输入Gitlab私有仓库名：')" PROJECTNAME
 		break
 	else
 		clear
@@ -79,9 +84,9 @@ fi
 TEMP_FILE=$(mktemp)
 
 for ((i = 1; i <= CONFIG_COUNT; )); do
-	read -p "请输入第 $i 个配置的访问路径（例如/test）： " LOCATION
-	read -p "请输入第 $i 个配置的GitHub文件路径（例如/test.txt）： " FILE_PASS
-	read -p "是否允许浏览器访问该文件？(y/n): " ALLOW_BROWSER_ACCESS
+	read -p "$(echo_blue '请输入第 $i 个配置的访问路径，例如/test：')" LOCATION
+	read -p "$(echo_blue '请输入第 $i 个配置的GitHub文件路径，例如/test.txt：')" FILE_PASS
+	read -p "$(echo_blue '是否允许浏览器访问该文件？(y/n)：')" ALLOW_BROWSER_ACCESS
 
 	if [ "$choice" == "1" ]; then
 		FILE_PASS_CONVERTED=$(echo "$FILE_PASS" | sed 's@/@%2F@g' | sed 's@^%2F@/@')
@@ -96,10 +101,10 @@ for ((i = 1; i <= CONFIG_COUNT; )); do
 		echo_red "第 $i 个配置有误，状态码: $STATUS_CODE;若域名、用户名、仓库名、令牌无误，请重新输入访问路径和文件路径，否则请重新运行脚本。"
 		echo
 		while true; do
-			echo "是否退出:"
-			echo "1) 否"
-			echo "2) 是"
-			read -p "请输入你的选择: " choices
+			echo_blue "是否退出:"
+			echo_blue "1) 否"
+			echo_blue "2) 是"
+			read -p "$echo_blue '请输入你的选择：')" choices
 
 			if [ "$choices" == "1" ]; then
 				break
