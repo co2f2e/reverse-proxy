@@ -56,6 +56,7 @@ while true; do
 		read -p "$(echo_yellow '请输入反向代理配置的数量：')" CONFIG_COUNT
 		read -p "$(echo_yellow '请输入Github用户名：')" USERNAME
 		read -p "$(echo_yellow '请输入Github私有仓库名：')" PROJECTNAME
+  		echo
 		break
 	elif [ "$choice" == "1" ]; then
 		read -p "$(echo_yellow '请输入你的二级域名：') " DOMAIN
@@ -63,6 +64,7 @@ while true; do
 		read -p "$(echo_yellow '请输入反向代理配置的数量：')" CONFIG_COUNT
 		read -p "$(echo_yellow '请输入Gitlab用户名：')" USERNAME
 		read -p "$(echo_yellow '请输入Gitlab私有仓库名：')" PROJECTNAME
+  		echo
 		break
 	else
 		clear
