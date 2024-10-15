@@ -84,8 +84,8 @@ fi
 TEMP_FILE=$(mktemp)
 
 for ((i = 1; i <= CONFIG_COUNT; )); do
-	read -p "$(echo_yellow '请输入第 $i 个配置的访问路径，例如/test：')" LOCATION
-	read -p "$(echo_yellow '请输入第 $i 个配置的GitHub文件路径，例如/test.txt：')" FILE_PASS
+	read -p "$(echo_yellow '请输入第 {$i} 个配置的访问路径，例如/test：')" LOCATION
+	read -p "$(echo_yellow '请输入第 {$i} 个配置的GitHub文件路径，例如/test.txt：')" FILE_PASS
 	read -p "$(echo_yellow '是否允许浏览器访问该文件？(y/n)：')" ALLOW_BROWSER_ACCESS
 
 	if [ "$choice" == "1" ]; then
