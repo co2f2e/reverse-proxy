@@ -10,9 +10,19 @@
 * 若反代的文件中包含隐私数据，请不要允许浏览器访问
 * Github私有仓库和Gitlab私有仓库已验证可用
 * 脚本存在BUG,逻辑不严谨,不影响正常使用
+## 证书路径
+### SSL证书：
+```bash
+/root/domain.crt
+/root/domain.key
+```
+### CA证书：
+```bash
+/etc/ssl/certs/ca-certificates.crt
+```
 ## 环境
 Debian 11
 ## 运行
-```shell
+```bash
 bash <(curl -Ls https://raw.githubusercontent.com/co2f2e/reverse-proxy/main/nginx_auto_config.sh)
 ```
