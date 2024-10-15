@@ -11,12 +11,12 @@
 * Github私有仓库和Gitlab私有仓库已验证可用
 * 脚本存在BUG,逻辑不严谨,不影响正常使用
 ## 证书路径
-### SSL证书：
+### SSL证书
 ```bash
 /root/domain.crt
 /root/domain.key
 ```
-### CA证书：
+### CA证书
 ```bash
 /etc/ssl/certs/ca-certificates.crt
 ```
