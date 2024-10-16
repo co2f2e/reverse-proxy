@@ -219,10 +219,6 @@ EOF
 
 rm -f "$TEMP_FILE"
 
-sudo apt-get purge -y qrencode > /dev/null 2>&1
-
-sudo apt-get autoremove -y > /dev/null 2>&1
-
 sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
 
 echo "$nginx_config" | sudo tee /etc/nginx/sites-available/default >/dev/null
