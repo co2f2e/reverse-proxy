@@ -31,7 +31,7 @@ check_domain() {
 
     if [ -z "$PING_RESULT" ] || [ "$PING_RESULT" != "$SERVER_IP" ]; then
     	echo
-    	echo_red "域名未解析到此服务器"
+    	echo_red "该域名未解析到此服务器"
      	echo
      	continue
     else
