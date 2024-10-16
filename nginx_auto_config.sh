@@ -30,9 +30,11 @@ check_domain() {
     SERVER_IP=$(hostname -I | awk '{print $1}')
 
     if [ -z "$PING_RESULT" ] || [ "$PING_RESULT" != "$SERVER_IP" ]; then
+    	echo
     	echo_red "域名未解析到此服务器"
+     	echo
      	continue
-    elif
+    else
     	break
     fi
 }
