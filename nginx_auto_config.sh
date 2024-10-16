@@ -130,7 +130,7 @@ for ((i = 1; i <= CONFIG_COUNT; )); do
 		echo
 		echo_green "第 $i 个配置访问路径： https://$DOMAIN$LOCATION   状态码: $STATUS_CODE"
   		echo
-    		qrencode -t -H ANSIUTF8 "https://$DOMAIN$LOCATION"
+                qrencode -t ANSIUTF8 -l H "https://$DOMAIN$LOCATION"
 		echo
 	fi
 
