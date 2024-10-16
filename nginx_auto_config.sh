@@ -25,11 +25,11 @@ echo_blue() {
 check_domain() {
     local DOMAIN=$1
     
-    IP_RESULT=$(dig +short $DOMAIN A)
+    # IP_RESULT=$(dig +short $DOMAIN A)
 
-    if [ -z "$IP_RESULT" ]; then
+   # if [ -z "$IP_RESULT" ]; then
         IP_RESULT=$(dig +short $DOMAIN AAAA)
-    fi
+    # fi
 
     SERVER_IP=$(hostname -I)
 
