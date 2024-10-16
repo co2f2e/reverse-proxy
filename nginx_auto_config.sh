@@ -66,15 +66,16 @@ while true; do
 
 	echo
 
+  	while true; do
+		read -p "$(echo_yellow '请输入你的二级域名：') " DOMAIN
+    		check_domain "$DOMAIN"
+			if [ $? -ne 0 ]; then
+      				continue
+  		        fi
+		 		break
+	done
+
 	if [ "$choice" == "2" ]; then
- 			while true; do
-				read -p "$(echo_yellow '请输入你的二级域名：') " DOMAIN
-    				check_domain "$DOMAIN"
-				    if [ $? -ne 0 ]; then
-      					  continue
-  			            fi
-		 		    break
-			done
 		read -p "$(echo_yellow '请输入Github私有仓库令牌：')" TOKEN
 		read -p "$(echo_yellow '请输入反向代理配置的数量：')" CONFIG_COUNT
 		read -p "$(echo_yellow '请输入Github用户名：')" USERNAME
@@ -82,7 +83,6 @@ while true; do
   		echo
 		break
 	elif [ "$choice" == "1" ]; then
-		read -p "$(echo_yellow '请输入你的二级域名：') " DOMAIN
 		read -p "$(echo_yellow '请输入Gitlab私有仓库令牌：')" TOKEN
 		read -p "$(echo_yellow '请输入反向代理配置的数量：')" CONFIG_COUNT
 		read -p "$(echo_yellow '请输入Gitlab用户名：')" USERNAME
