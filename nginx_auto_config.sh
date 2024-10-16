@@ -33,10 +33,9 @@ check_domain() {
     	echo
     	echo_red "该域名未解析到此服务器"
      	echo
-     	continue
-    else
-    	break
+        return 1
     fi
+    return 0
 }
 
 clear
@@ -71,6 +70,10 @@ while true; do
  			while true; do
 				read -p "$(echo_yellow '请输入你的二级域名：') " DOMAIN
     				check_domain "$DOMAIN"
+				    if [ $? -ne 0 ]; then
+      					  continue
+  			            fi
+		 		    break
 			done
 		read -p "$(echo_yellow '请输入Github私有仓库令牌：')" TOKEN
 		read -p "$(echo_yellow '请输入反向代理配置的数量：')" CONFIG_COUNT
