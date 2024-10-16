@@ -85,6 +85,11 @@ fi
 
 TEMP_FILE=$(mktemp)
 
+if ! command -v qrencode &> /dev/null; then
+    sudo apt-get update
+    sudo apt-get install -y qrencode
+fi
+
 for ((i = 1; i <= CONFIG_COUNT; )); do
 	read -p "$(echo_yellow "请输入第 $i 个配置的访问路径，例如/test：")" LOCATION
 	read -p "$(echo_yellow "请输入第 $i 个配置的GitHub文件路径，例如/test.txt：")" FILE_PASS
@@ -124,6 +129,8 @@ for ((i = 1; i <= CONFIG_COUNT; )); do
 	else
 		echo
 		echo_green "第 $i 个配置访问路径： https://$DOMAIN$LOCATION   状态码: $STATUS_CODE"
+  		echo
+    		qrencode -t -H ANSIUTF8 "https://$DOMAIN$LOCATION"
 		echo
 	fi
 
@@ -219,6 +226,10 @@ EOF
 )
 
 rm -f "$TEMP_FILE"
+
+sudo apt-get purge -y qrencode
+
+sudo apt-get autoremove -y
 
 sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
 
