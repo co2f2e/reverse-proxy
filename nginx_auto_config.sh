@@ -25,16 +25,28 @@ echo_blue() {
 check_domain() {
     local DOMAIN=$1
     
-    PING_RESULT=$(ping -4 -c 1 $DOMAIN 2>/dev/null | grep -oP '\(\K[0-9.]+' | head -n 1)
+    IP_RESULT=$(dig +short www.just2so.lol A)
 
-    SERVER_IP=$(hostname -I | awk '{print $1}')
+    if [ -z "$IP_RESULT" ]; then
+        IP_RESULT=$(dig +short www.just2so.lol AAAA)
+    fi
 
-    if [ -z "$PING_RESULT" ] || [ "$PING_RESULT" != "$SERVER_IP" ]; then
-    	echo
-    	echo_red "该域名未解析到此服务器"
-     	echo
+    SERVER_IP=$(hostname -I)
+
+    if [ -z "$IP_RESULT" ]; then
+        echo
+        echo_red "未找到与域名关联的 IP 地址"
+        echo
         return 1
     fi
+
+    if ! echo "$SERVER_IP" | grep -q "$IP_RESULT"; then
+        echo
+        echo_red "该域名未解析到此服务器"
+        echo
+        return 1
+    fi
+
     return 0
 }
 
