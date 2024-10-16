@@ -29,13 +29,14 @@ check_domain() {
 
    # if [ -z "$IP_RESULT" ]; then
         IP_RESULT=$(dig +short $DOMAIN AAAA)
+	echo "IP_RESULT: $IP_RESULT"
     # fi
 
     SERVER_IP=$(hostname -I)
 
     if [ -z "$IP_RESULT" ]; then
         echo
-        echo_red "未找到与域名关联的 IP 地址"
+        echo_red "未找到与域名关联的IP地址"
         echo
         return 1
     fi
