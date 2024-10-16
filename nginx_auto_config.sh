@@ -25,7 +25,7 @@ echo_blue() {
 check_domain() {
     local DOMAIN=$1
     
-    PING_RESULT=$(ping -c 1 $DOMAIN 2>/dev/null | grep -oP '\(\K[0-9.]+' | head -n 1)
+    PING_RESULT=$(ping -4 -c 1 $DOMAIN 2>/dev/null | grep -oP '\(\K[0-9.]+' | head -n 1)
 
     SERVER_IP=$(hostname -I | awk '{print $1}')
 
