@@ -25,20 +25,12 @@ echo_blue() {
 check_domain() {
     local DOMAIN=$1
 
-    PING_RESULT=$(ping -c 1 $DOMAIN | grep -oP '\(\K[0-9.]+')
-    if [ -z "$PING_RESULT" ]; then
-        echo_red "无法解析域名: $DOMAIN"
-        continue
-    fi
+    PING_RESULT=$(ping -c 1 $DOMAIN | grep -oP '\(\K[0-9.]+' | head -n 1)
 
     SERVER_IP=$(hostname -I | awk '{print $1}')
 
-    if [ "$PING_RESULT" == "$SERVER_IP" ]; then
-        echo_green "域名已正确解析到此服务器."
-	break
-    else
-        echo_red "域名未正确解析到此服务器"
-    fi
+    if [ -z "$PING_RESULT" ] || [ "$PING_RESULT" != "$SERVER_IP" ]; then
+    	echo_red "域名未解析到此服务器"
 }
 
 clear
