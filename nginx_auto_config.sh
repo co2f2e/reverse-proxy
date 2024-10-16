@@ -22,6 +22,25 @@ echo_blue() {
 	echo -e "${BLUE}${1}${RESET}"
 }
 
+check_domain() {
+    local DOMAIN=$1
+
+    PING_RESULT=$(ping -c 1 $DOMAIN | grep -oP '\(\K[0-9.]+')
+    if [ -z "$PING_RESULT" ]; then
+        echo_red "无法解析域名: $DOMAIN"
+        continue
+    fi
+
+    SERVER_IP=$(hostname -I | awk '{print $1}')
+
+    if [ "$PING_RESULT" == "$SERVER_IP" ]; then
+        echo_green "域名已正确解析到此服务器."
+	break
+    else
+        echo_red "域名未正确解析到此服务器"
+    fi
+}
+
 clear
 
 check_url() {
@@ -51,7 +70,10 @@ while true; do
 	echo
 
 	if [ "$choice" == "2" ]; then
-		read -p "$(echo_yellow '请输入你的二级域名：') " DOMAIN
+ 			while true; do
+				read -p "$(echo_yellow '请输入你的二级域名：') " DOMAIN
+    				check_domain "$DOMAIN"
+			done
 		read -p "$(echo_yellow '请输入Github私有仓库令牌：')" TOKEN
 		read -p "$(echo_yellow '请输入反向代理配置的数量：')" CONFIG_COUNT
 		read -p "$(echo_yellow '请输入Github用户名：')" USERNAME
