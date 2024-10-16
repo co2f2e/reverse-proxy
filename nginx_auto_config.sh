@@ -85,11 +85,6 @@ fi
 
 TEMP_FILE=$(mktemp)
 
-if ! command -v qrencode &> /dev/null; then
-	sudo apt-get update > /dev/null 2>&1
-	sudo apt-get install -y qrencode > /dev/null 2>&1
-fi
-
 for ((i = 1; i <= CONFIG_COUNT; )); do
 	read -p "$(echo_yellow "请输入第 $i 个配置的访问路径，例如/test：")" LOCATION
 	read -p "$(echo_yellow "请输入第 $i 个配置的GitHub文件路径，例如/test.txt：")" FILE_PASS
@@ -129,16 +124,13 @@ for ((i = 1; i <= CONFIG_COUNT; )); do
 	else
 		echo
 		echo_green "第 $i 个配置访问路径： https://$DOMAIN$LOCATION   状态码: $STATUS_CODE"
-  		if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
-  		echo
-                qrencode -t ANSIUTF8 -l H "https://$DOMAIN$LOCATION"
-		echo
-  		fi
 	fi
 
 	if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
 		cat <<EOF >>"$TEMP_FILE"
     location $LOCATION/ {
+        add_header Content-Disposition 'attachment; filename="$FILE_NAME"';
+	add_header Content-Type application/octet-stream;
         proxy_pass $PROXY_URL;
     }
 EOF
