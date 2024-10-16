@@ -139,8 +139,6 @@ for ((i = 1; i <= CONFIG_COUNT; )); do
 	if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
 		cat <<EOF >>"$TEMP_FILE"
     location $LOCATION/ {
-        add_header Content-Disposition 'attachment; filename="$FILE_NAME"';
-	add_header Content-Type application/octet-stream;
         proxy_pass $PROXY_URL;
     }
 EOF
