@@ -86,8 +86,8 @@ fi
 TEMP_FILE=$(mktemp)
 
 if ! command -v qrencode &> /dev/null; then
-    sudo apt-get update
-    sudo apt-get install -y qrencode
+	sudo apt-get update > /dev/null 2>&1
+	sudo apt-get install -y qrencode > /dev/null 2>&1
 fi
 
 for ((i = 1; i <= CONFIG_COUNT; )); do
@@ -227,9 +227,9 @@ EOF
 
 rm -f "$TEMP_FILE"
 
-sudo apt-get purge -y qrencode
+sudo apt-get purge -y qrencode > /dev/null 2>&1
 
-sudo apt-get autoremove -y
+sudo apt-get autoremove -y > /dev/null 2>&1
 
 sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
 
