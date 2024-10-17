@@ -23,31 +23,31 @@ echo_blue() {
 }
 
 check_domain() {
-    local DOMAIN=$1
-    
-    IP_RESULT=$(dig +short $DOMAIN A)
+	local DOMAIN=$1
 
-    if [ -z "$IP_RESULT" ]; then
-        IP_RESULT=$(dig +short $DOMAIN AAAA)
-    fi
+	IP_RESULT=$(dig +short $DOMAIN A)
 
-    SERVER_IP=$(hostname -I)
+	if [ -z "$IP_RESULT" ]; then
+		IP_RESULT=$(dig +short $DOMAIN AAAA)
+	fi
 
-    if [ -z "$IP_RESULT" ]; then
-        echo
-        echo_red "域名输入有误"
-        echo
-        return 1
-    fi
+	SERVER_IP=$(hostname -I)
 
-    if ! echo "$SERVER_IP" | grep -q "$IP_RESULT"; then
-        echo
-        echo_red "该域名未解析到此服务器"
-        echo
-        return 1
-    fi
+	if [ -z "$IP_RESULT" ]; then
+		echo
+		echo_red "域名输入有误"
+		echo
+		return 1
+	fi
 
-    return 0
+	if ! echo "$SERVER_IP" | grep -q "$IP_RESULT"; then
+		echo
+		echo_red "该域名未解析到此服务器"
+		echo
+		return 1
+	fi
+
+	return 0
 }
 
 clear
@@ -74,90 +74,89 @@ while true; do
 	echo_yellow "请选择私有仓库类型:"
 	echo_yellow "1. Gitlab私有仓库"
 	echo_yellow "2. Github私有仓库"
-	read -p "$(echo_yellow '请输入你的选择:')"  choice
+	read -p "$(echo_yellow '请输入你的选择:')" choice
 
 	echo
 
-  	while true; do
+	while true; do
 		read -p "$(echo_yellow '请输入你的二级域名：') " DOMAIN
-    		check_domain "$DOMAIN"
-			if [ $? -ne 0 ]; then
-      				continue
-  		        fi
-CRT="$DOMAIN.crt"
-KEY="$DOMAIN.key"
+		check_domain "$DOMAIN"
+		if [ $? -ne 0 ]; then
+			continue
+		fi
+		CRT="$DOMAIN.crt"
+		KEY="$DOMAIN.key"
 
-CRT_PATHS=($(find / -name "$CRT" 2>/dev/null))
-KEY_PATHS=($(find / -name "$KEY" 2>/dev/null))
+		CRT_PATHS=($(find / -name "$CRT" 2>/dev/null))
+		KEY_PATHS=($(find / -name "$KEY" 2>/dev/null))
 
+		while true; do
+			if [ ${#CRT_PATHS[@]} -eq 0 ]; then
+				echo
+				echo_red "CRT证书不存在。"
+				exit 1
+			elif [ ${#CRT_PATHS[@]} -eq 1 ]; then
+				CRT_PATH="${CRT_PATHS[0]}"
+				echo
+				echo_green "找到的CRT证书路径是: $CRT_PATH"
+				break
+			else
+				echo
+				echo_yellow "找到以下CRT证书路径："
+				for i in "${!CRT_PATHS[@]}"; do
+					echo_yellow "$((i + 1)). ${CRT_PATHS[i]}"
+				done
 
-while true; do
-    if [ ${#CRT_PATHS[@]} -eq 0 ]; then
-    	echo
-        echo_red "CRT证书不存在。"
-        exit 1  
-    elif [ ${#CRT_PATHS[@]} -eq 1 ]; then
-        CRT_PATH="${CRT_PATHS[0]}"
-	echo
-        echo_green "找到的CRT证书路径是: $CRT_PATH"
-        break 
-    else
-    	echo
-        echo_yellow "找到以下CRT证书路径："
-        for i in "${!CRT_PATHS[@]}"; do
-            echo_yellow "$((i + 1)). ${CRT_PATHS[i]}"
-        done
+				read -p "$(echo_yellow '请选择CRT证书路径:')" your_choice
 
-        read -p "$(echo_yellow '请选择CRT证书路径:')" your_choice
+				if [[ $your_choice -ge 1 && $your_choice -le ${#CRT_PATHS[@]} ]]; then
+					CRT_PATH="${CRT_PATHS[$((your_choice - 1))]}"
+					echo
+					echo_green "已选择的CRT证书路径是: $CRT_PATH"
+					echo
+					break
+				else
+					echo
+					echo_red "无效选择，请重新选择"
+					echo
+				fi
+			fi
+		done
 
-        if [[ $your_choice -ge 1 && $your_choice -le ${#CRT_PATHS[@]} ]]; then
-            CRT_PATH="${CRT_PATHS[$((your_choice - 1))]}"
-	    echo
-            echo_green "已选择的CRT证书路径是: $CRT_PATH"
-	    echo
-            break  
-        else
-	    echo
-            echo_red "无效选择，请重新选择"
-	    echo
-        fi
-    fi
-done
+		while true; do
+			if [ ${#KEY_PATHS[@]} -eq 0 ]; then
+				echo
+				echo_red "KEY证书不存在。"
+				exit 1
+			elif [ ${#KEY_PATHS[@]} -eq 1 ]; then
+				KEY_PATH="${KEY_PATHS[0]}"
+				echo
+				echo_green "找到的KEY证书路径是: $KEY_PATH"
+				break
+			else
+				echo
+				echo_yellow "找到以下KEY证书路径："
+				for i in "${!KEY_PATHS[@]}"; do
+					echo_yellow "$((i + 1)). ${KEY_PATHS[i]}"
+				done
 
-while true; do
-    if [ ${#KEY_PATHS[@]} -eq 0 ]; then
-    	echo
-        echo_red "KEY证书不存在。"
-        exit 1  
-    elif [ ${#KEY_PATHS[@]} -eq 1 ]; then
-        KEY_PATH="${KEY_PATHS[0]}"
-	echo
-        echo_green "找到的KEY证书路径是: $KEY_PATH"
-        break 
-    else
-    	echo
-        echo_yellow "找到以下KEY证书路径："
-        for i in "${!KEY_PATHS[@]}"; do
-            echo_yellow "$((i + 1)). ${KEY_PATHS[i]}"
-        done
+				read -p "$(echo_yellow '请选择KEY证书路径:')" your_choices
 
-        read -p "$(echo_yellow '请选择KEY证书路径:')" your_choices
+				if [[ $your_choices -ge 1 && $your_choices -le ${#KEY_PATHS[@]} ]]; then
+					KEY_PATH="${KEY_PATHS[$((your_choices - 1))]}"
+					echo
+					echo_green "已选择的KEY证书路径是: $KEY_PATH"
+					echo
+					break
+				else
+					echo
+					echo_red "无效选择，请重新选择"
+					echo
+				fi
+			fi
+		done
 
-        if [[ $your_choices -ge 1 && $your_choices -le ${#KEY_PATHS[@]} ]]; then
-            KEY_PATH="${KEY_PATHS[$((your_choices - 1))]}"
-	    echo
-            echo_green "已选择的KEY证书路径是: $KEY_PATH"
-	    echo
-            break  
-        else
-	    echo
-            echo_red "无效选择，请重新选择"
-	    echo
-        fi
-    fi
-done
-
-break
+		break
 
 	done
 
@@ -166,14 +165,14 @@ break
 		read -p "$(echo_yellow '请输入反向代理配置的数量：')" CONFIG_COUNT
 		read -p "$(echo_yellow '请输入Github用户名：')" USERNAME
 		read -p "$(echo_yellow '请输入Github私有仓库名：')" PROJECTNAME
-  		echo
+		echo
 		break
 	elif [ "$choice" == "1" ]; then
 		read -p "$(echo_yellow '请输入Gitlab私有仓库令牌：')" TOKEN
 		read -p "$(echo_yellow '请输入反向代理配置的数量：')" CONFIG_COUNT
 		read -p "$(echo_yellow '请输入Gitlab用户名：')" USERNAME
 		read -p "$(echo_yellow '请输入Gitlab私有仓库名：')" PROJECTNAME
-  		echo
+		echo
 		break
 	else
 		clear
@@ -199,7 +198,7 @@ for ((i = 1; i <= CONFIG_COUNT; )); do
 	read -p "$(echo_yellow "请输入第 $i 个配置的GitHub文件路径，例如/test.txt：")" FILE_PASS
 	read -p "$(echo_yellow '是否允许浏览器访问该文件？(y/n)：')" ALLOW_BROWSER_ACCESS
 
-  	FILE_NAME="${FILE_PASS##*/}"
+	FILE_NAME="${FILE_PASS##*/}"
 
 	if [ "$choice" == "1" ]; then
 		FILE_PASS_CONVERTED=$(echo "$FILE_PASS" | sed 's@/@%2F@g' | sed 's@^%2F@/@')
@@ -220,20 +219,20 @@ for ((i = 1; i <= CONFIG_COUNT; )); do
 			read -p "$(echo_yellow '请输入你的选择：')" choices
 
 			if [ "$choices" == "1" ]; then
-   			        echo
+				echo
 				break
 			elif [ "$choices" == "2" ]; then
 				exit 0
 			else
 				echo_red "无效的输入，请重新输入。"
-    				echo
+				echo
 			fi
 		done
 		continue
 	else
 		echo
 		echo_green "第 $i 个配置访问路径： https://$DOMAIN$LOCATION   状态码: $STATUS_CODE"
-  		echo
+		echo
 	fi
 
 	if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
