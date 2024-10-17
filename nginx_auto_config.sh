@@ -166,6 +166,7 @@ while true; do
 				CA_PATH="${CA_PATHS[0]}"
 				echo
 				echo_green "找到的CA证书路径是: $CA_PATH"
+    				echo
 				break
 			else
 				echo
