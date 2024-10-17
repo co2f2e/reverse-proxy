@@ -85,7 +85,34 @@ while true; do
 			if [ $? -ne 0 ]; then
       				continue
   		        fi
-		 		break
+paths=($(find / -name "$DOMAIN" 2>/dev/null))
+
+while true; do
+    if [ ${#paths[@]} -eq 0 ]; then
+        echo "CRT证书不存在。"
+        exit 1  
+    elif [ ${#paths[@]} -eq 1 ]; then
+        CRT_PATH="${paths[0]}"
+        echo "找到的证书路径是: $CRT_PATH"
+        break 
+    else
+        echo "找到以下证书文件："
+        for i in "${!paths[@]}"; do
+            echo "$((i + 1)). ${paths[i]}"
+        done
+
+        read -p "请选择证书文件 (输入对应数字): " choice
+
+        if [[ $choice -ge 1 && $choice -le ${#paths[@]} ]]; then
+            CRT_PATH="${paths[$((choice - 1))]}"
+            echo "选择的证书路径是: $CRT_PATH"
+            break  
+        else
+            echo "无效选择，请重新选择。"
+        fi
+    fi
+done
+
 	done
 
 	if [ "$choice" == "2" ]; then
@@ -198,7 +225,7 @@ server {
     listen [::]:443 ssl http2;
     server_name $DOMAIN;
 
-    ssl_certificate /root/$DOMAIN.crt;
+    ssl_certificate $CRT_PATH;
     ssl_certificate_key /root/$DOMAIN.key;
 
     ssl_protocols TLSv1.2 TLSv1.3;
