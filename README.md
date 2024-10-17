@@ -18,8 +18,7 @@
 ## 说明
 * 禁止浏览器访问，是通过USER-AGENT来判断实现的，并不是所有浏览器都不能访问，目前只判断了以下浏览器： 
   Mozilla,Chrome,Safari,Opera,Edge,MSIE,Trident,Baiduspider,Yandex,Sogou,360SE,Qihoo,UCBrowser,WebKit,Bing,Googlebot,Yahoo,Bot,Crawler
-* 生成的URL，不允许浏览器访问，在如上的浏览器是无法打开的
-* 没有根据URL生成二维码，感觉用处不大，禁止浏览器访问，扫码也是无法打开的
+* 终端输出的URL，若选择了不允许浏览器访问，在如上的浏览器是无法打开的
 
 ## 证书路径
 
