@@ -20,12 +20,6 @@
   Mozilla,Chrome,Safari,Opera,Edge,MSIE,Trident,Baiduspider,Yandex,Sogou,360SE,Qihoo,UCBrowser,WebKit,Bing,Googlebot,Yahoo,Bot,Crawler
 * 终端输出的URL，若选择了不允许浏览器访问，在如上的浏览器是无法打开的
 
-## 证书路径
-
-### 默认CA证书路径
-```bash
-/etc/ssl/certs/ca-certificates.crt
-```
 ## 环境
 Debian 11
 
