@@ -85,29 +85,33 @@ while true; do
       				continue
   		        fi
 CRT="$DOMAIN.crt"
-paths=($(find / -name "$CRT" 2>/dev/null))
+KEY="$DOMAIN.key"
+
+CRT_PATHS=($(find / -name "$CRT" 2>/dev/null))
+KEY_PATHS=($(find / -name "$KEY" 2>/dev/null))
+
 
 while true; do
-    if [ ${#paths[@]} -eq 0 ]; then
+    if [ ${#CRT_PATHS[@]} -eq 0 ]; then
     	echo
         echo_red "CRT证书不存在。"
         exit 1  
-    elif [ ${#paths[@]} -eq 1 ]; then
-        CRT_PATH="${paths[0]}"
+    elif [ ${#CRT_PATHS[@]} -eq 1 ]; then
+        CRT_PATH="${CRT_PATHS[0]}"
 	echo
         echo_green "找到的CRT证书路径是: $CRT_PATH"
         break 
     else
     	echo
         echo_yellow "找到以下CRT证书路径："
-        for i in "${!paths[@]}"; do
-            echo_yellow "$((i + 1)). ${paths[i]}"
+        for i in "${!CRT_PATHS[@]}"; do
+            echo_yellow "$((i + 1)). ${CRT_PATHS[i]}"
         done
 
         read -p "$(echo_yellow '请选择CRT证书路径:')" your_choice
 
-        if [[ $your_choice -ge 1 && $your_choice -le ${#paths[@]} ]]; then
-            CRT_PATH="${paths[$((your_choice - 1))]}"
+        if [[ $your_choice -ge 1 && $your_choice -le ${#CRT_PATHS[@]} ]]; then
+            CRT_PATH="${CRT_PATHS[$((your_choice - 1))]}"
 	    echo
             echo_green "已选择的CRT证书路径是: $CRT_PATH"
 	    echo
@@ -119,6 +123,40 @@ while true; do
         fi
     fi
 done
+
+while true; do
+    if [ ${#KEY_PATHS[@]} -eq 0 ]; then
+    	echo
+        echo_red "KEY证书不存在。"
+        exit 1  
+    elif [ ${#KEY_PATHS[@]} -eq 1 ]; then
+        KEY_PATH="${KEY_PATHS[0]}"
+	echo
+        echo_green "找到的KEY证书路径是: $KEY_PATH"
+        break 
+    else
+    	echo
+        echo_yellow "找到以下KEY证书路径："
+        for i in "${!KEY_PATHS[@]}"; do
+            echo_yellow "$((i + 1)). ${KEY_PATHS[i]}"
+        done
+
+        read -p "$(echo_yellow '请选择KEY证书路径:')" your_choices
+
+        if [[ $your_choices -ge 1 && $your_choices -le ${#KEY_PATHS[@]} ]]; then
+            KEY_PATH="${KEY_PATHS[$((your_choices - 1))]}"
+	    echo
+            echo_green "已选择的KEY证书路径是: $KEY_PATH"
+	    echo
+            break  
+        else
+	    echo
+            echo_red "无效选择，请重新选择"
+	    echo
+        fi
+    fi
+done
+
 break
 
 	done
@@ -234,7 +272,7 @@ server {
     server_name $DOMAIN;
 
     ssl_certificate $CRT_PATH;
-    ssl_certificate_key /root/$DOMAIN.key;
+    ssl_certificate_key $KEY_PATH;
 
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
