@@ -85,7 +85,8 @@ while true; do
 			if [ $? -ne 0 ]; then
       				continue
   		        fi
-paths=($(find / -name "$DOMAIN" 2>/dev/null))
+CRT="$DOMAIN.crt"
+paths=($(find / -name "$CRT" 2>/dev/null))
 
 while true; do
     if [ ${#paths[@]} -eq 0 ]; then
