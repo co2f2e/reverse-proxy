@@ -72,8 +72,8 @@ fi
 
 while true; do
 	echo_yellow "请选择私有仓库类型:"
-	echo_yellow "1) Gitlab私有仓库"
-	echo_yellow "2) Github私有仓库"
+	echo_yellow "1. Gitlab私有仓库"
+	echo_yellow "2. Github私有仓库"
 	read -p "$(echo_yellow '请输入你的选择:')"  choice
 
 	echo
@@ -99,20 +99,22 @@ while true; do
         break 
     else
     	echo
-        echo_yellow "找到以下CRT证书文件："
+        echo_yellow "找到以下CRT证书路径："
         for i in "${!paths[@]}"; do
             echo_yellow "$((i + 1)). ${paths[i]}"
         done
 
-        read -p "$(echo_yellow '请选择证书文件 (输入对应数字):')" your_choice
+        read -p "$(echo_yellow '请选择CRT证书路径:')" your_choice
 
         if [[ $your_choice -ge 1 && $your_choice -le ${#paths[@]} ]]; then
             CRT_PATH="${paths[$((your_choice - 1))]}"
 	    echo
-            echo_green "选择的证书路径是: $CRT_PATH"
+            echo_green "已选择的CRT证书路径是: $CRT_PATH"
+	    echo
             break  
         else
-            echo_red "无效选择，请重新选择。"
+            echo_red "无效选择，请重新选择"
+	    echo
         fi
     fi
 done
