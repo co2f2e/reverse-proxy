@@ -89,6 +89,7 @@ while true; do
 
 		CRT_PATHS=($(find / -name "$CRT" 2>/dev/null))
 		KEY_PATHS=($(find / -name "$KEY" 2>/dev/null))
+                CA_PATHS=($(find / -name "ca-certificates.crt" 2>/dev/null))
 
 		while true; do
 			if [ ${#CRT_PATHS[@]} -eq 0 ]; then
@@ -146,6 +147,39 @@ while true; do
 					KEY_PATH="${KEY_PATHS[$((your_choices - 1))]}"
 					echo
 					echo_green "已选择的KEY证书路径是: $KEY_PATH"
+					echo
+					break
+				else
+					echo
+					echo_red "无效选择，请重新选择"
+					echo
+				fi
+			fi
+		done
+
+  		while true; do
+			if [ ${#CA_PATHS[@]} -eq 0 ]; then
+				echo
+				echo_red "CA证书不存在"
+				exit 1
+			elif [ ${#CA_PATHS[@]} -eq 1 ]; then
+				CA_PATH="${CA_PATHS[0]}"
+				echo
+				echo_green "找到的CA证书路径是: $CA_PATH"
+				break
+			else
+				echo
+				echo_yellow "找到以下CA证书路径："
+				for i in "${!CA_PATHS[@]}"; do
+					echo_yellow "$((i + 1)). ${CA_PATHS[i]}"
+				done
+
+				read -p "$(echo_yellow '请选择CA证书路径:')" your_choices_ca
+
+				if [[ $your_choices_ca -ge 1 && $your_choices_ca -le ${#CA_PATHS[@]} ]]; then
+					CA_PATH="${CA_PATHS[$((your_choices_ca - 1))]}"
+					echo
+					echo_green "已选择的CA证书路径是: $CA_PATH"
 					echo
 					break
 				else
@@ -279,7 +313,7 @@ server {
 
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
-    proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt; 
+    proxy_ssl_trusted_certificate $CA_PATH; 
     proxy_ssl_verify on;   
     proxy_ssl_verify_depth 2;
 
