@@ -99,15 +99,16 @@ while true; do
         break 
     else
     	echo
-        echo_YELLOW "找到以下CRT证书文件："
+        echo_yellow "找到以下CRT证书文件："
         for i in "${!paths[@]}"; do
-            echo "$((i + 1)). ${paths[i]}"
+            echo_yellow "$((i + 1)). ${paths[i]}"
         done
 
-        read -p "请选择证书文件 (输入对应数字): " choice
+        read -p "$(echo_yellow '请选择证书文件 (输入对应数字):')" choice
 
         if [[ $choice -ge 1 && $choice -le ${#paths[@]} ]]; then
             CRT_PATH="${paths[$((choice - 1))]}"
+	    echo
             echo_green "选择的证书路径是: $CRT_PATH"
             break  
         else
