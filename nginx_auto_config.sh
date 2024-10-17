@@ -104,10 +104,10 @@ while true; do
             echo_yellow "$((i + 1)). ${paths[i]}"
         done
 
-        read -p "$(echo_yellow '请选择证书文件 (输入对应数字):')" choice
+        read -p "$(echo_yellow '请选择证书文件 (输入对应数字):')" your_choice
 
-        if [[ $choice -ge 1 && $choice -le ${#paths[@]} ]]; then
-            CRT_PATH="${paths[$((choice - 1))]}"
+        if [[ $your_choice -ge 1 && $your_choice -le ${#paths[@]} ]]; then
+            CRT_PATH="${paths[$((your_choice - 1))]}"
 	    echo
             echo_green "选择的证书路径是: $CRT_PATH"
             break  
