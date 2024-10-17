@@ -35,7 +35,7 @@ check_domain() {
 
     if [ -z "$IP_RESULT" ]; then
         echo
-        echo_red "未找到与域名关联的IPV4地址或IPV6地址"
+        echo_red "域名输入有误"
         echo
         return 1
     fi
@@ -89,13 +89,16 @@ paths=($(find / -name "$CRT" 2>/dev/null))
 
 while true; do
     if [ ${#paths[@]} -eq 0 ]; then
+    	echo
         echo_red "CRT证书不存在。"
         exit 1  
     elif [ ${#paths[@]} -eq 1 ]; then
         CRT_PATH="${paths[0]}"
+	echo
         echo_green "找到的CRT证书路径是: $CRT_PATH"
         break 
     else
+    	echo
         echo_YELLOW "找到以下CRT证书文件："
         for i in "${!paths[@]}"; do
             echo "$((i + 1)). ${paths[i]}"
