@@ -113,6 +113,7 @@ while true; do
 	    echo
             break  
         else
+	    echo
             echo_red "无效选择，请重新选择"
 	    echo
         fi
