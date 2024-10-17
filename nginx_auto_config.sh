@@ -29,7 +29,6 @@ check_domain() {
 
     if [ -z "$IP_RESULT" ]; then
         IP_RESULT=$(dig +short $DOMAIN AAAA)
-	echo "IP_RESULT: $IP_RESULT"
     fi
 
     SERVER_IP=$(hostname -I)
