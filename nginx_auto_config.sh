@@ -340,9 +340,7 @@ fi
 
 nginx_config+=$'\n'
 nginx_config+=$(cat "$TEMP_FILE")
-
 nginx_config+=$'\n}\n'
-
 nginx_config+=$(
 	cat <<EOF
 server {
@@ -356,8 +354,8 @@ server {
     listen 443 ssl default_server;
     listen [::]:443 ssl default_server;
     server_name _;
-    ssl_certificate /root/$DOMAIN.crt;
-    ssl_certificate_key /root/$DOMAIN.key;
+    ssl_certificate $CRT_PATH;
+    ssl_certificate_key $KEY_PATH;
     return 444;
 }
 EOF
