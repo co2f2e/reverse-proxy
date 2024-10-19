@@ -47,4 +47,5 @@ push_file_to_gitlab() {
     cd ..
     rm -r "$REPO_NAME"
 }
+
 push_file_to_gitlab
