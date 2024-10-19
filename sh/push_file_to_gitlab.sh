@@ -5,7 +5,7 @@ apt-get install sudo
 
 check_git_installation() {
     if ! command -v git &>/dev/null; then
-        echo -e "${yellow}正在安装Git...${nc}"
+        echo -e "正在安装Git..."
         if [[ "$release" == "Debian" || "$release" == "Ubuntu" ]]; then
             sudo apt update
             sudo apt install git -y
