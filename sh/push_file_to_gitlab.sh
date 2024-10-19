@@ -40,7 +40,7 @@ push_file_to_gitlab() {
     git commit -m "本次提交"
     git push -u origin "$BRANCH_NAME"
     if [ $? -eq 0 ]; then
-        echo -e "推送成功..."
+        echo -e "推送成功"
     else
         echo -e "推送失败"
     fi
