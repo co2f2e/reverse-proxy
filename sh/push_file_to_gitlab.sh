@@ -16,7 +16,7 @@ check_git_installation() {
 }
 
 push_file_to_gitlab() {
-    local repo_name=""
+    local REPO_NAME=""
     local branch_name="main"
     local user_name=""
     local token=""
@@ -27,15 +27,15 @@ push_file_to_gitlab() {
     git config --global user.name "$user_name"
     git config --global user.email "$user_name@example.com"
     cd /usr || exit
-    if [ -d "$repo_name" ]; then
-        rm -r "$repo_name"
+    if [ -d "$REPO_NAME" ]; then
+        rm -r "$REPO_NAME"
     fi
-    mkdir "$repo_name"
-    cd "$repo_name" || exit
+    mkdir "$REPO_NAME"
+    cd "$REPO_NAME" || exit
     git init -b "$branch_name"
-    git remote add origin https://"$user_name":"$token"@gitlab.com/"$user_name"/"$repo_name".git
+    git remote add origin https://"$user_name":"$token"@gitlab.com/"$user_name"/"$REPO_NAME".git
     git pull origin "$branch_name"
-    cp "$need_push_file_path" /usr/"$repo_name"/"$file_name"
+    cp "$need_push_file_path" /usr/"$REPO_NAME"/"$file_name"
     git add "$file_name"
     git commit -m "本次提交"
     git push -u origin "$branch_name"
@@ -45,6 +45,6 @@ push_file_to_gitlab() {
         echo -e "推送失败"
     fi
     cd ..
-    rm -r "$repo_name"
+    rm -r "$REPO_NAME"
 }
 push_file_to_gitlab
