@@ -20,7 +20,7 @@ push_file_to_gitlab() {
     local BRANCH_NAME="main"  #分支名
     local USER_NAME=""  #用户名
     local TOKEN="" #令牌
-    local NEED_PUSH_FILE_PASH=""  #需要推送文件的全路径
+    local NEED_PUSH_FILE_PASH=""  #需要推送文件的绝对路径
     
     local FILE_NAME=$(basename "$NEED_PUSH_FILE_PASH")
     check_git_installation
