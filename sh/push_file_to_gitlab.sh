@@ -19,7 +19,7 @@ push_file_to_gitlab() {
     local REPO_NAME=""
     local BRANCH_NAME="main"
     local USER_NAME=""
-    local token=""
+    local TOKEN=""
     local need_push_file_path=""
     
     local file_name=$(basename "$need_push_file_path")
@@ -33,7 +33,7 @@ push_file_to_gitlab() {
     mkdir "$REPO_NAME"
     cd "$REPO_NAME" || exit
     git init -b "$BRANCH_NAME"
-    git remote add origin https://"$USER_NAME":"$token"@gitlab.com/"$USER_NAME"/"$REPO_NAME".git
+    git remote add origin https://"$USER_NAME":"$TOKEN"@gitlab.com/"$USER_NAME"/"$REPO_NAME".git
     git pull origin "$BRANCH_NAME"
     cp "$need_push_file_path" /usr/"$REPO_NAME"/"$file_name"
     git add "$file_name"
