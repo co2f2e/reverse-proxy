@@ -18,14 +18,14 @@ check_git_installation() {
 push_file_to_gitlab() {
     local REPO_NAME=""
     local BRANCH_NAME="main"
-    local user_name=""
+    local USER_NAME=""
     local token=""
     local need_push_file_path=""
     
     local file_name=$(basename "$need_push_file_path")
     check_git_installation
-    git config --global user.name "$user_name"
-    git config --global user.email "$user_name@example.com"
+    git config --global user.name "$USER_NAME"
+    git config --global user.email "$USER_NAME@example.com"
     cd /usr || exit
     if [ -d "$REPO_NAME" ]; then
         rm -r "$REPO_NAME"
@@ -33,7 +33,7 @@ push_file_to_gitlab() {
     mkdir "$REPO_NAME"
     cd "$REPO_NAME" || exit
     git init -b "$BRANCH_NAME"
-    git remote add origin https://"$user_name":"$token"@gitlab.com/"$user_name"/"$REPO_NAME".git
+    git remote add origin https://"$USER_NAME":"$token"@gitlab.com/"$USER_NAME"/"$REPO_NAME".git
     git pull origin "$BRANCH_NAME"
     cp "$need_push_file_path" /usr/"$REPO_NAME"/"$file_name"
     git add "$file_name"
