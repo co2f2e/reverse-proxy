@@ -17,7 +17,7 @@ check_git_installation() {
 
 push_file_to_gitlab() {
     local REPO_NAME=""
-    local branch_name="main"
+    local BRANCH_NAME="main"
     local user_name=""
     local token=""
     local need_push_file_path=""
@@ -32,13 +32,13 @@ push_file_to_gitlab() {
     fi
     mkdir "$REPO_NAME"
     cd "$REPO_NAME" || exit
-    git init -b "$branch_name"
+    git init -b "$BRANCH_NAME"
     git remote add origin https://"$user_name":"$token"@gitlab.com/"$user_name"/"$REPO_NAME".git
-    git pull origin "$branch_name"
+    git pull origin "$BRANCH_NAME"
     cp "$need_push_file_path" /usr/"$REPO_NAME"/"$file_name"
     git add "$file_name"
     git commit -m "本次提交"
-    git push -u origin "$branch_name"
+    git push -u origin "$BRANCH_NAME"
     if [ $? -eq 0 ]; then
         echo -e "推送成功..."
     else
