@@ -22,7 +22,7 @@ push_file_to_gitlab() {
     local TOKEN=""
     local NEED_PUSH_FILE_PASH=""
     
-    local file_name=$(basename "$NEED_PUSH_FILE_PASH")
+    local FILE_NAME=$(basename "$NEED_PUSH_FILE_PASH")
     check_git_installation
     git config --global user.name "$USER_NAME"
     git config --global user.email "$USER_NAME@example.com"
@@ -35,8 +35,8 @@ push_file_to_gitlab() {
     git init -b "$BRANCH_NAME"
     git remote add origin https://"$USER_NAME":"$TOKEN"@gitlab.com/"$USER_NAME"/"$REPO_NAME".git
     git pull origin "$BRANCH_NAME"
-    cp "$NEED_PUSH_FILE_PASH" /usr/"$REPO_NAME"/"$file_name"
-    git add "$file_name"
+    cp "$NEED_PUSH_FILE_PASH" /usr/"$REPO_NAME"/"$FILE_NAME"
+    git add "$FILE_NAME"
     git commit -m "本次提交"
     git push -u origin "$BRANCH_NAME"
     if [ $? -eq 0 ]; then
