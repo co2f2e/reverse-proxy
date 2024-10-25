@@ -272,7 +272,7 @@ for ((i = 1; i <= CONFIG_COUNT; )); do
 
 	if [[ "$ALLOW_BROWSER_ACCESS" == "y" || "$ALLOW_BROWSER_ACCESS" == "Y" ]]; then
 		cat <<EOF >>"$TEMP_FILE"
-    location $LOCATION/ {
+    location = $LOCATION {
         add_header Content-Disposition 'attachment; filename="$FILE_NAME"';
 	add_header Content-Type application/octet-stream;
         proxy_pass $PROXY_URL;
@@ -280,7 +280,7 @@ for ((i = 1; i <= CONFIG_COUNT; )); do
 EOF
 	else
 		cat <<EOF >>"$TEMP_FILE"
-    location $LOCATION/ {
+    location = $LOCATION {
         if (\$http_user_agent ~* "Mozilla|Chrome|Safari|Opera|Edge|MSIE|Trident|Baiduspider|Yandex|Sogou|360SE|Qihoo|UCBrowser|WebKit|Bing|Googlebot|Yahoo|Bot|Crawler") {
             return 444;
         }
