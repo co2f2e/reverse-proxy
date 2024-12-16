@@ -27,4 +27,3 @@ Debian 11
 ```bash
 bash <(curl -Ls https://raw.githubusercontent.com/co2f2e/reverse-proxy/main/nginx_auto_config.sh)
 ```
-## 持续更新中...
