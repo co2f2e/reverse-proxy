@@ -305,6 +305,8 @@ server {
     listen [::]:443 ssl http2;
     server_name $DOMAIN;
 
+    root /var/www/html;
+
     ssl_certificate $CRT_PATH;
     ssl_certificate_key $KEY_PATH;
 
